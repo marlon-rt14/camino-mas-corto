@@ -7,6 +7,7 @@ package vista;
 
 import java.awt.Color;
 import javax.swing.JFrame;
+import javax.swing.JOptionPane;
 import javax.swing.JTable;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableModel;
@@ -25,6 +26,7 @@ public class Main extends javax.swing.JFrame {
     }
     
     int matriz[][];
+    Tabla tabla;
 
     /**
      * This method is called from within the constructor to initialize the form.
@@ -42,6 +44,10 @@ public class Main extends javax.swing.JFrame {
         jScrollPane1 = new javax.swing.JScrollPane();
         tblGrafo = new javax.swing.JTable();
         btnCalcular = new javax.swing.JButton();
+        jLabel3 = new javax.swing.JLabel();
+        txtInicio = new javax.swing.JTextField();
+        jLabel4 = new javax.swing.JLabel();
+        txtFin = new javax.swing.JTextField();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setBackground(new java.awt.Color(255, 255, 255));
@@ -73,18 +79,34 @@ public class Main extends javax.swing.JFrame {
         tblGrafo.getAccessibleContext().setAccessibleName("");
 
         btnCalcular.setText("Calcular");
+        btnCalcular.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnCalcularActionPerformed(evt);
+            }
+        });
+
+        jLabel3.setText("Inicio: ");
+
+        jLabel4.setText("Fin: ");
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addComponent(btnCalcular)
-                .addGap(22, 22, 22))
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                        .addComponent(jLabel3)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(txtInicio, javax.swing.GroupLayout.PREFERRED_SIZE, 129, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(jLabel4)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(txtFin, javax.swing.GroupLayout.PREFERRED_SIZE, 129, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(btnCalcular)
+                        .addGap(22, 22, 22))
                     .addGroup(layout.createSequentialGroup()
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                             .addComponent(jLabel1)
@@ -111,7 +133,13 @@ public class Main extends javax.swing.JFrame {
                 .addGap(18, 18, 18)
                 .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 172, Short.MAX_VALUE)
                 .addGap(18, 18, 18)
-                .addComponent(btnCalcular)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(btnCalcular)
+                    .addComponent(jLabel3)
+                    .addComponent(txtInicio, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                        .addComponent(jLabel4)
+                        .addComponent(txtFin, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addGap(18, 18, 18))
         );
 
@@ -120,29 +148,8 @@ public class Main extends javax.swing.JFrame {
 
     private void btnAceptarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAceptarActionPerformed
         // TODO add your handling code here:
-        crearTabla();
-        DefaultTableModel dtm = (DefaultTableModel) tblGrafo.getModel();
-        for (int i = 0; i < matriz.length; i++) {
-            for (int j = 1; j < matriz[i].length; j++) {
-                if (dtm.getValueAt(i, j).equals("")) {
-                    matriz[i][j] = 0;
-                }else{
-                    matriz[i][j] = Integer.parseInt(dtm.getValueAt(i, j).toString());
-                }
-            }
-        }
-        
-        for (int i = 0; i < matriz.length; i++) {
-            for (int j = 1; j < matriz[i].length; j++) {
-                System.out.print(matriz[i][j] + " ");
-            }
-            System.out.println("");
-        }
-    }//GEN-LAST:event_btnAceptarActionPerformed
-
-    public void crearTabla() {
         int cantidad = Integer.parseInt(txtCantidad.getText());
-        Tabla tabla = new Tabla(cantidad, (DefaultTableModel) tblGrafo.getModel());
+        tabla = new Tabla(cantidad, (DefaultTableModel) tblGrafo.getModel());
         tblGrafo.setModel(tabla.getModelo());
         tblGrafo.setFillsViewportHeight(true);
         tblGrafo.setForeground(Color.black);
@@ -166,7 +173,71 @@ public class Main extends javax.swing.JFrame {
             }
             dtm.addRow(aux);
         }
+        
+    }//GEN-LAST:event_btnAceptarActionPerformed
+
+    private void btnCalcularActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCalcularActionPerformed
+        // TODO add your handling code here:
+        generar();
+        String [] columnas = tabla.getColumnas();
+        String [] nodos = new String[tabla.getColumnas().length - 1];
+        int cont = 1;
+        for (int i = 0; i < nodos.length; i++) {
+            nodos[i] = columnas[cont];
+            cont++;
+        }
+        
+//        System.out.println("logitud nodos: " + nodos.length);
+//        System.out.println("longitud matriz: " + matriz.length);
+        
+        DefaultTableModel dtm = (DefaultTableModel) tblGrafo.getModel();
+        Dijkstra grafo = new Dijkstra(nodos);
+        
+         for (int i = 0; i < matriz.length; i++) {
+            for (int j = 1; j < matriz[i].length; j++) {
+                if (matriz[i][j] >= 0) {
+                    System.out.println("origen: " + nodos[i] + " destino: " + columnas[j]);
+                    grafo.agregarRuta(nodos[i], columnas[j], matriz[i][j]);
+                }
+            }
+        }
+
+        
+        String inicio = txtInicio.getText();
+        String fin = txtFin.getText();
+        
+        String respuesta = grafo.encontrarRutaMinimaDijkstra(inicio, fin);
+        JOptionPane.showMessageDialog(this, respuesta);
+        
+//        System.out.println("NODOS");
+//        System.out.println("columnas: " + columnas.length);
+//        System.out.println("nodos: " + nodos.length);
+//        for (int i = 0; i < nodos.length; i++) {
+//            System.out.println("pos " + i + ": " +nodos[i]);
+//        }
+    }//GEN-LAST:event_btnCalcularActionPerformed
+
+    
+    public void generar(){
+        DefaultTableModel dtm = (DefaultTableModel) tblGrafo.getModel();
+        for (int i = 0; i < matriz.length; i++) {
+            for (int j = 1; j < matriz[i].length; j++) {
+                if (dtm.getValueAt(i, j).equals("")) {
+                    matriz[i][j] = -1;
+                }else{
+                    matriz[i][j] = Integer.parseInt(dtm.getValueAt(i, j).toString());
+                }
+            }
+        }
+        
+//        for (int i = 0; i < matriz.length; i++) {
+//            for (int j = 1; j < matriz[i].length; j++) {
+//                System.out.print(matriz[i][j] + " ");
+//            }
+//            System.out.println("");
+//        }
     }
+   
 
     /**
      * @param args the command line arguments
@@ -209,8 +280,12 @@ public class Main extends javax.swing.JFrame {
     private javax.swing.JButton btnCalcular;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
+    private javax.swing.JLabel jLabel3;
+    private javax.swing.JLabel jLabel4;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JTable tblGrafo;
     private javax.swing.JTextField txtCantidad;
+    private javax.swing.JTextField txtFin;
+    private javax.swing.JTextField txtInicio;
     // End of variables declaration//GEN-END:variables
 }
