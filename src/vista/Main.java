@@ -6,6 +6,7 @@
 package vista;
 
 import java.awt.Color;
+import java.util.Arrays;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 import javax.swing.JTable;
@@ -24,7 +25,7 @@ public class Main extends javax.swing.JFrame {
     public Main() {
         initComponents();
     }
-    
+
     int matriz[][];
     Tabla tabla;
 
@@ -161,7 +162,8 @@ public class Main extends javax.swing.JFrame {
         int tamanio = tabla.getColumnas().length;
         matriz = new int[tamanio - 1][tamanio];
         String header[] = tabla.getColumnas();
-        
+
+        //encerar
         int cont = 0;
         for (int i = 1; i < tamanio; i++) {
             String aux[] = new String[tamanio];
@@ -173,63 +175,64 @@ public class Main extends javax.swing.JFrame {
             }
             dtm.addRow(aux);
         }
-        
+
     }//GEN-LAST:event_btnAceptarActionPerformed
 
     private void btnCalcularActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCalcularActionPerformed
         // TODO add your handling code here:
         generar();
-        String [] columnas = tabla.getColumnas();
-        String [] nodos = new String[tabla.getColumnas().length - 1];
+        String[] columnas = tabla.getColumnas();
+        String[] nodos = new String[tabla.getColumnas().length - 1];
         int cont = 1;
         for (int i = 0; i < nodos.length; i++) {
             nodos[i] = columnas[cont];
             cont++;
         }
-        
+
 //        System.out.println("logitud nodos: " + nodos.length);
 //        System.out.println("longitud matriz: " + matriz.length);
-        
+//        System.out.println("MATRIZ ORIGINAL");
+//        for (int i = 0; i < matriz.length; i++) {
+//            for (int j = 1; j < matriz[i].length; j++) {
+//                System.out.print(matriz[i][j] + " ");
+//            }
+//            System.out.println("");
+//        }
+//        System.out.println("");
         DefaultTableModel dtm = (DefaultTableModel) tblGrafo.getModel();
         Dijkstra grafo = new Dijkstra(nodos);
-        
-         for (int i = 0; i < matriz.length; i++) {
+
+        for (int i = 0; i < matriz.length; i++) {
             for (int j = 1; j < matriz[i].length; j++) {
-                if (matriz[i][j] >= 0) {
-                    System.out.println("origen: " + nodos[i] + " destino: " + columnas[j]);
+                if (matriz[i][j] > 0) {
+                    //System.out.println("origen: " + nodos[i] + " destino: " + columnas[j]);
+                    //System.out.println("Agregar ruta: " + nodos[i] + " - " + columnas[j] + " - " + matriz[i][j]);
                     grafo.agregarRuta(nodos[i], columnas[j], matriz[i][j]);
                 }
             }
         }
 
-        
+        grafo.imprimirGrafoMatriz();
         String inicio = txtInicio.getText();
         String fin = txtFin.getText();
-        
+
         String respuesta = grafo.encontrarRutaMinimaDijkstra(inicio, fin);
         JOptionPane.showMessageDialog(this, respuesta);
-        
-//        System.out.println("NODOS");
-//        System.out.println("columnas: " + columnas.length);
-//        System.out.println("nodos: " + nodos.length);
-//        for (int i = 0; i < nodos.length; i++) {
-//            System.out.println("pos " + i + ": " +nodos[i]);
-//        }
+
     }//GEN-LAST:event_btnCalcularActionPerformed
 
-    
-    public void generar(){
+    public void generar() {
         DefaultTableModel dtm = (DefaultTableModel) tblGrafo.getModel();
         for (int i = 0; i < matriz.length; i++) {
             for (int j = 1; j < matriz[i].length; j++) {
                 if (dtm.getValueAt(i, j).equals("")) {
-                    matriz[i][j] = -1;
-                }else{
+                    matriz[i][j] = 0;
+                } else {
                     matriz[i][j] = Integer.parseInt(dtm.getValueAt(i, j).toString());
                 }
             }
         }
-        
+
 //        for (int i = 0; i < matriz.length; i++) {
 //            for (int j = 1; j < matriz[i].length; j++) {
 //                System.out.print(matriz[i][j] + " ");
@@ -237,7 +240,6 @@ public class Main extends javax.swing.JFrame {
 //            System.out.println("");
 //        }
     }
-   
 
     /**
      * @param args the command line arguments
